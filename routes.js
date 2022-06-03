@@ -3,28 +3,16 @@
 module.exports = function(app) {
  var todoList = require('./controller');
  
- //routing untuk index
- app.route('/')
- .get(todoList.index);
-
  //routing untuk user
- app.route('/mahasiswa')
- .get(todoList.mahasiswa);
+ app.route('/mahasiswa').get(todoList.mahasiswa);
  
- app.route('/mahasiswa/:nim')
- .get(todoList.findMahasiswa);
+ app.route('/mahasiswa/:nim').get(todoList.findMahasiswa);
  
-//  app.route('/login')
-//  .get(todoList.loginUser);
+ app.route('/mahasiswa').post(todoList.registerMahasiswa);
 
- app.route('/mahasiswa')
- .post(todoList.registerMahasiswa);
-
- app.route('/mahasiswa')
- .put(todoList.updateMahasiswa);
+ app.route('/mahasiswa/:nim').put(todoList.updateMahasiswa);
  
- app.route('/mahasiswa/:nim')
- .delete(todoList.deleterMahasiswa);
+ app.route('/mahasiswa/:nim').delete(todoList.deleterMahasiswa);
  
 //  //routing untuk jasa
 //  app.route('/services')

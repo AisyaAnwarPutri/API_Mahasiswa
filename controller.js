@@ -2,7 +2,7 @@
 
 var response = require('./res');
 var connection = require('./conn');
-// var encrypt = require('./encrypt_password');
+
 
 exports.index = function(req, res) {
     response.ok("Hello, pesan ini dari sisi server NodeJS Restful API!", res)
@@ -110,7 +110,7 @@ exports.registerMahasiswa = async function(req, res) {
 };
 
 exports.updateMahasiswa = async function(req, res) {
-    var nim = req.body.nim;
+    var nim = req.params.nim;
     var nama = req.body.nama;
     var email = req.body.email;
     var no_hp = req.body.no_hp;
@@ -125,23 +125,17 @@ exports.updateMahasiswa = async function(req, res) {
         return response.gagal(message, res);
     }
     
-    var sql_query;
-    var params;
-    if(nim == ""){
-        sql_query = 'UPDATE tb_mahasiswa SET nim = ?, nama = ?, email = ?, no_hp = ?, jurusan = ?, prodi = ? WHERE id = ?';
-        params = [ nim, nama, email, no_hp, jurusan, prodi, mahasiswa_id ]
-    }else{
-        sql_query = 'UPDATE tb_mahasiswa SET nim = ?, nama = ?, email = ?, no_hp = ?, jurusan = ?, prodi = ?, kelas = ? WHERE id = ?';
-        // var encrypt_password = encrypt.saltHashPassword(plain_password);
-        params = [ nim, nama, email, no_hp, jurusan, prodi, kelas, paralel ]
-    }
+
+    var sql_query = 'UPDATE tb_mahasiswa SET nama = ?, email = ?, no_hp = ?, jurusan = ?, prodi = ?, kelas = ?, paralel = ? WHERE nim = ?';
+    var params = [ nama, email, no_hp, jurusan, prodi, kelas, paralel, nim ]
     
-    await connection.query('SELECT * FROM tb_mahasiswa where email = ? and nim <> ?', [ email, nim ], function(error, rows, fields){
+    await connection.query('SELECT * FROM tb_mahasiswa where nim = ? Limit 1', [ nim ], function(error, rows, fields){
         if(rows.length > 0){
-            message = "Email mahasiswa telah terdaftar, silahkan pilih yang lain!";
-            response.gagal(message, res);
-        }else{
             connection.query(sql_query, params, function (error, rows, fields){
+                if(rows.affectedRows == 0){
+                    message = "Data tidak berhasil di Update"
+                    response.gagal(message, res)
+                }
                 if(error){
                     message = "Error ketika mengubah data mahasiswa!";
                     response.gagal(message, res);
@@ -150,6 +144,10 @@ exports.updateMahasiswa = async function(req, res) {
                     response.ok(message, res);
                 }
             });
+            
+        }else{
+            message = "Nim mahasiswa telah terdaftar, silahkan pilih yang lain!";
+            response.gagal(message, res);
         }
     });
 };
