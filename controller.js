@@ -110,7 +110,7 @@ exports.registerMahasiswa = async function(req, res) {
 };
 
 exports.updateMahasiswa = async function(req, res) {
-    var nim = req.params.nim;
+    var nim = req.body.nim;
     var nama = req.body.nama;
     var email = req.body.email;
     var no_hp = req.body.no_hp;

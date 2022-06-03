@@ -10,7 +10,7 @@ module.exports = function(app) {
  
  app.route('/mahasiswa').post(todoList.registerMahasiswa);
 
- app.route('/mahasiswa/:nim').put(todoList.updateMahasiswa);
+ app.route('/mahasiswa/').put(todoList.updateMahasiswa);
  
  app.route('/mahasiswa/:nim').delete(todoList.deleterMahasiswa);
  
